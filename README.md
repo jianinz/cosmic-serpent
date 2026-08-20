@@ -62,7 +62,8 @@ Then open `http://localhost:8000` on desktop, or use the computer's LAN IP from 
 ├── index.html
 ├── styles.css
 ├── game-core.js
-├── game-render.js
+├── game-render-a.js
+├── game-render-b.js
 ├── game-input.js
 ├── manifest.webmanifest
 ├── service-worker.js
