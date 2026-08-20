@@ -1,0 +1,16 @@
+{
+  "name": "Cosmic Serpent — 星球穿越冒险",
+  "short_name": "Cosmic Serpent",
+  "description": "宇宙贪吃蛇：穿越太阳系、收集能量、躲避黑洞与敌对宇宙蛇。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#02040b",
+  "theme_color": "#02040b",
+  "icons": [
+    {"src": "icons/icon-180.png", "sizes": "180x180", "type": "image/png"},
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}
