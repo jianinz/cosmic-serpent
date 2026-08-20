@@ -4,7 +4,12 @@
   if(!surface||!guide||!boost||!pause)return;
 
   let steerPointer=null,startX=0,startY=0;
+  let boostPointer=null,lastGameplayActive=false;
   const DEAD_ZONE=14;
+
+  function gameplayTouchActive(){
+    return !!(game && game.running && !game.paused && !game.transitioning && !game.dead && !game.win);
+  }
 
   function setGuide(x,y,show=true){
     guide.style.left=x+'px';guide.style.top=y+'px';
@@ -12,7 +17,7 @@
   }
 
   function beginSteer(e){
-    if(e.target!==surface)return;
+    if(!gameplayTouchActive() || e.target!==surface)return;
     steerPointer=e.pointerId;
     startX=e.clientX;startY=e.clientY;
     touchSteer.active=false;
@@ -24,7 +29,7 @@
   }
 
   function moveSteer(e){
-    if(e.pointerId!==steerPointer)return;
+    if(!gameplayTouchActive() || e.pointerId!==steerPointer)return;
     const dx=e.clientX-startX,dy=e.clientY-startY;
     const d=Math.hypot(dx,dy);
     if(d<DEAD_ZONE)return;
@@ -41,7 +46,7 @@
     touchSteer.active=false;
     touchDesiredAngle=null;
     setGuide(0,0,false);
-    e&&e.preventDefault();
+    if(e)e.preventDefault();
   }
 
   surface.addEventListener('pointerdown',beginSteer,{passive:false});
@@ -49,8 +54,8 @@
   surface.addEventListener('pointerup',endSteer,{passive:false});
   surface.addEventListener('pointercancel',endSteer,{passive:false});
 
-  let boostPointer=null;
   boost.addEventListener('pointerdown',e=>{
+    if(!gameplayTouchActive())return;
     boostPointer=e.pointerId;
     boost.setPointerCapture(e.pointerId);
     boostHeld=true;keys['shift']=true;boost.classList.add('active');
@@ -67,7 +72,28 @@
   boost.addEventListener('pointercancel',stopBoost,{passive:false});
 
   pause.addEventListener('pointerdown',e=>e.stopPropagation());
-  pause.addEventListener('click',e=>{e.stopPropagation();togglePause()});
+  pause.addEventListener('click',e=>{
+    e.stopPropagation();
+    if(game && game.running && !game.transitioning)togglePause();
+  });
+
+  // Keep the full-screen steering surface completely inert while a menu/modal is open.
+  // This prevents iPad Safari from letting the transparent gameplay layer steal taps
+  // from difficulty, start, resume, save, and next-level buttons.
+  function syncTouchAvailability(){
+    const active=gameplayTouchActive();
+    surface.style.pointerEvents=active?'auto':'none';
+    boost.style.pointerEvents=active?'auto':'none';
+    pause.style.pointerEvents=(game && game.running && !game.transitioning && !game.dead && !game.win)?'auto':'none';
+
+    if(lastGameplayActive && !active){
+      endSteer(null);
+      stopBoost(null);
+    }
+    lastGameplayActive=active;
+    requestAnimationFrame(syncTouchAvailability);
+  }
+  requestAnimationFrame(syncTouchAvailability);
 
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden){endSteer(null);stopBoost(null)}
