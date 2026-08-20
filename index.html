@@ -14,115 +14,32 @@
 </head>
 <body>
 <canvas id="game"></canvas>
-
 <div id="ui">
   <div id="hud" class="panel">
     <div class="logo">COSMIC SERPENT · PLANET ODYSSEY</div>
-    <div class="row">
-      <span>关卡 <b id="stageText">1/8</b></span>
-      <span>星球 <b id="planetText">月球</b></span>
-      <span>能量 <b id="energyText">0</b></span>
-      <span>长度 <b id="lengthText">0</b></span>
-    </div>
-    <div class="row">
-      <span>难度 <b id="diffText">EASY</b></span>
-      <span>敌蛇 <b id="enemyText">0</b></span>
-      <span>速度 <b id="speedText">0</b></span>
-      <span>太阳 <b id="sunText">远离</b></span>
-    </div>
-    <div id="objective">目标：收集能量豆。</div>
-    <div id="progress"><i></i></div>
+    <div class="row"><span>关卡 <b id="stageText">1/8</b></span><span>星球 <b id="planetText">月球</b></span><span>能量 <b id="energyText">0</b></span><span>长度 <b id="lengthText">0</b></span></div>
+    <div class="row"><span>难度 <b id="diffText">EASY</b></span><span>敌蛇 <b id="enemyText">0</b></span><span>速度 <b id="speedText">0</b></span><span>太阳 <b id="sunText">远离</b></span></div>
+    <div id="objective">目标：收集能量豆。</div><div id="progress"><i></i></div>
   </div>
-
-  <div id="controls">
-    <button id="pauseBtn" class="ctrl">Ⅱ 暂停</button>
-    <button id="saveBtn" class="ctrl">💾 保存</button>
-    <button id="musicBtn" class="ctrl">♫ 音乐</button>
-  </div>
-
+  <div id="controls"><button id="pauseBtn" class="ctrl">Ⅱ 暂停</button><button id="saveBtn" class="ctrl">💾 保存</button><button id="musicBtn" class="ctrl">♫ 音乐</button></div>
   <div id="toast"></div>
-
-  <div id="miniHelp" class="panel">
-    WASD / 方向键：转向　Shift：加速<br>
-    P / Esc：暂停　Shift：消耗能量加速<br>
-    撞到陨石或垃圾会缩短；撞到其他贪吃蛇或黑洞会直接毁灭。
-  </div>
-
-  <div id="startOverlay" class="overlay">
-    <div class="card">
-      <h1>Cosmic Serpent</h1>
-      <div class="planetBadge">星球穿越冒险 · V2</div>
-      <div class="story">
-        <b>故事：</b>一条来自地球的小蛇偷偷钻进了一枚火箭。火箭把它带到了月球。<br><br>
-        在陌生的宇宙里，它发现只要吞下特殊的“星际豆”，就能打开通往下一颗星球的虫洞。它必须依次穿越
-        <b>月球 → 火星 → 地球 → 水星 → 海王星 → 冥王星 → 木星 → 土星</b>，
-        躲开黑洞、陨石、太空垃圾和其他危险的宇宙蛇，最终完成环游太阳系的旅程。
-      </div>
-
-      <p>每一关先收集普通能量豆。当能量达到目标后，会出现一颗特殊颜色的“穿越豆”。吃掉它即可开启虫洞进入下一颗星球。</p>
-      <p><b>新的太阳机制：</b>太阳外围的金色能量圈可以让贪吃蛇高速吸收能量并成长；但再靠近一步进入红色灼烧区，蛇身会持续被烧蚀。越靠近太阳核心，长度损失越快。</p>
-      <p class="small">点击“开始”或“继续”后，幻想环境音乐会自动播放；右上角可随时关闭。</p>
-
-      <div class="difficulty">
-        <button class="diff selected" data-diff="easy"><b>EASY</b><span>速度较慢 · 敌蛇较少 · 黑洞较少<br>适合熟悉路线与机制</span></button>
-        <button class="diff" data-diff="medium"><b>MEDIUM</b><span>速度提高 · 敌蛇增加 · 黑洞增加<br>标准挑战</span></button>
-        <button class="diff" data-diff="hard"><b>HARD</b><span>高速 · 敌蛇密集 · 黑洞更多<br>容错显著降低</span></button>
-      </div>
-
-      <div class="actions">
-        <button id="newGameBtn" class="primary">🚀 从月球开始</button>
-        <button id="continueBtn" class="secondary">▶ 继续上次游戏</button>
-      </div>
-      <div id="saveInfo" class="small"></div>
-    </div>
-  </div>
-
-  <div id="pauseOverlay" class="overlay hidden">
-    <div id="pauseCard" class="card">
-      <h2>游戏已暂停</h2>
-      <p>宇宙暂时静止。你可以继续、保存当前进度，或者返回主菜单。</p>
-      <div class="actions" style="justify-content:center">
-        <button id="resumeBtn" class="primary">继续游戏</button>
-        <button id="pauseSaveBtn" class="secondary">保存进度</button>
-        <button id="menuBtn" class="secondary">返回主菜单</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="levelOverlay" class="overlay hidden">
-    <div id="levelCard" class="card">
-      <h2 id="levelTitle">虫洞已开启</h2>
-      <div class="planetBadge" id="levelPlanet">下一站：火星</div>
-      <p id="levelStory"></p>
-      <div class="actions" style="justify-content:center">
-        <button id="nextLevelBtn" class="primary">穿越虫洞</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="endOverlay" class="overlay hidden">
-    <div class="card" style="text-align:center;max-width:540px">
-      <h1 id="endTitle">旅程结束</h1>
-      <p id="endText"></p>
-      <div class="actions" style="justify-content:center">
-        <button id="restartBtn" class="primary">重新开始</button>
-        <button id="endMenuBtn" class="secondary">返回主菜单</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="touchControls">
-    <div id="steerSurface" aria-label="拖动手指控制方向"></div>
-    <div id="touchGuide"></div>
-    <div id="touchHint">在画面任意位置拖动手指控制方向</div>
-    <button id="touchBoost" aria-label="加速">BOOST</button>
-    <button id="touchPause" class="ctrl" aria-label="暂停">Ⅱ</button>
-  </div>
-
+  <div id="miniHelp" class="panel">WASD / 方向键：转向　Shift：加速<br>P / Esc：暂停　Shift：消耗能量加速<br>撞到陨石或垃圾会缩短；撞到其他贪吃蛇或黑洞会直接毁灭。</div>
+  <div id="startOverlay" class="overlay"><div class="card">
+    <h1>Cosmic Serpent</h1><div class="planetBadge">星球穿越冒险 · V2</div>
+    <div class="story"><b>故事：</b>一条来自地球的小蛇偷偷钻进了一枚火箭。火箭把它带到了月球。<br><br>在陌生的宇宙里，它发现只要吞下特殊的“星际豆”，就能打开通往下一颗星球的虫洞。它必须依次穿越 <b>月球 → 火星 → 地球 → 水星 → 海王星 → 冥王星 → 木星 → 土星</b>，躲开黑洞、陨石、太空垃圾和其他危险的宇宙蛇，最终完成环游太阳系的旅程。</div>
+    <p>每一关先收集普通能量豆。当能量达到目标后，会出现一颗特殊颜色的“穿越豆”。吃掉它即可开启虫洞进入下一颗星球。</p>
+    <p><b>太阳机制：</b>太阳外围的金色能量圈可以让贪吃蛇高速吸收能量并成长；但再靠近一步进入红色灼烧区，蛇身会持续被烧蚀。越靠近太阳核心，长度损失越快。</p><p class="small">点击“开始”或“继续”后，幻想环境音乐会自动播放；右上角可随时关闭。</p>
+    <div class="difficulty"><button class="diff selected" data-diff="easy"><b>EASY</b><span>速度较慢 · 敌蛇较少 · 黑洞较少<br>适合熟悉路线与机制</span></button><button class="diff" data-diff="medium"><b>MEDIUM</b><span>速度提高 · 敌蛇增加 · 黑洞增加<br>标准挑战</span></button><button class="diff" data-diff="hard"><b>HARD</b><span>高速 · 敌蛇密集 · 黑洞更多<br>容错显著降低</span></button></div>
+    <div class="actions"><button id="newGameBtn" class="primary">🚀 从月球开始</button><button id="continueBtn" class="secondary">▶ 继续上次游戏</button></div><div id="saveInfo" class="small"></div>
+  </div></div>
+  <div id="pauseOverlay" class="overlay hidden"><div id="pauseCard" class="card"><h2>游戏已暂停</h2><p>宇宙暂时静止。你可以继续、保存当前进度，或者返回主菜单。</p><div class="actions" style="justify-content:center"><button id="resumeBtn" class="primary">继续游戏</button><button id="pauseSaveBtn" class="secondary">保存进度</button><button id="menuBtn" class="secondary">返回主菜单</button></div></div></div>
+  <div id="levelOverlay" class="overlay hidden"><div id="levelCard" class="card"><h2 id="levelTitle">虫洞已开启</h2><div class="planetBadge" id="levelPlanet">下一站：火星</div><p id="levelStory"></p><div class="actions" style="justify-content:center"><button id="nextLevelBtn" class="primary">穿越虫洞</button></div></div></div>
+  <div id="endOverlay" class="overlay hidden"><div class="card" style="text-align:center;max-width:540px"><h1 id="endTitle">旅程结束</h1><p id="endText"></p><div class="actions" style="justify-content:center"><button id="restartBtn" class="primary">重新开始</button><button id="endMenuBtn" class="secondary">返回主菜单</button></div></div></div>
+  <div id="touchControls"><div id="steerSurface" aria-label="拖动手指控制方向"></div><div id="touchGuide"></div><div id="touchHint">在画面任意位置拖动手指控制方向</div><button id="touchBoost" aria-label="加速">BOOST</button><button id="touchPause" class="ctrl" aria-label="暂停">Ⅱ</button></div>
 </div>
-
 <script src="game-core.js"></script>
-<script src="game-render.js"></script>
+<script src="game-render-a.js"></script>
+<script src="game-render-b.js"></script>
 <script src="game-input.js"></script>
 </body>
 </html>
