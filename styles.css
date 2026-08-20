@@ -1,0 +1,99 @@
+:root{
+  --bg:#02040b;--panel:rgba(5,9,21,.72);--line:rgba(150,190,255,.20);
+  --text:#eef4ff;--muted:#aab8d7;--accent:#7cf3df;--accent2:#9a7cff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:var(--text)}
+canvas{display:block;width:100vw;height:100vh}
+button,select{font:inherit}
+#ui{position:fixed;inset:0;pointer-events:none}
+.panel{background:var(--panel);backdrop-filter:blur(12px);border:1px solid var(--line);box-shadow:0 18px 50px rgba(0,0,0,.28)}
+#hud{position:absolute;left:16px;top:16px;width:min(360px,calc(100vw - 32px));padding:14px 16px;border-radius:16px}
+.logo{font-weight:900;font-size:13px;letter-spacing:.12em}
+.row{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;color:var(--muted);font-size:12px}
+.row b{color:#fff}
+#objective{margin-top:10px;padding:9px 10px;border-radius:10px;background:rgba(92,112,190,.12);font-size:12px;line-height:1.5;color:#dce6ff}
+#progress{height:7px;margin-top:9px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+#progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#65ead8,#8e79ff,#ff73b4)}
+#controls{position:absolute;right:16px;top:16px;display:flex;gap:8px;pointer-events:auto}
+.ctrl{border:1px solid rgba(160,190,255,.28);background:rgba(7,12,28,.72);color:#edf4ff;border-radius:12px;padding:10px 12px;cursor:pointer;backdrop-filter:blur(10px)}
+.ctrl:hover{background:rgba(24,34,70,.78)}
+#toast{position:absolute;left:50%;top:15%;transform:translateX(-50%);padding:10px 14px;border-radius:999px;background:rgba(4,8,20,.72);border:1px solid rgba(180,205,255,.2);font-size:14px;font-weight:800;opacity:0;transition:.25s;white-space:nowrap}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(circle at center,rgba(11,18,48,.32),rgba(1,2,7,.80));pointer-events:auto}
+.overlay.hidden{display:none}
+.card{width:min(690px,calc(100vw - 28px));max-height:90vh;overflow:auto;padding:26px;border-radius:22px;background:rgba(3,7,18,.88);border:1px solid rgba(160,190,255,.22);box-shadow:0 30px 100px rgba(0,0,0,.55);backdrop-filter:blur(18px)}
+.card h1{margin:0;font-size:32px;letter-spacing:.02em}
+.card h2{margin:0 0 8px;font-size:22px}
+.card p{color:#b6c1da;line-height:1.75;font-size:14px}
+.story{margin:16px 0;padding:14px 16px;border-left:3px solid #8f7eff;background:rgba(110,92,255,.08);border-radius:0 12px 12px 0}
+.story b{color:#fff}
+.difficulty{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.diff{padding:14px;border-radius:14px;border:1px solid rgba(160,190,255,.16);background:rgba(255,255,255,.035);cursor:pointer;color:#dce6ff;text-align:left}
+.diff b{display:block;font-size:14px;margin-bottom:5px}
+.diff span{font-size:11px;color:#96a5c7;line-height:1.45}
+.diff.selected{outline:2px solid #7cf3df;background:rgba(91,224,210,.08)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.primary{border:0;border-radius:12px;padding:12px 18px;font-weight:900;cursor:pointer;color:#06101d;background:linear-gradient(135deg,#7cf3df,#9b80ff 62%,#ff75b8)}
+.secondary{border:1px solid rgba(160,190,255,.26);border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;color:#eaf1ff;background:rgba(255,255,255,.06)}
+.secondary:disabled{opacity:.35;cursor:not-allowed}
+.small{font-size:11px;color:#8797ba;margin-top:12px}
+#pauseCard{text-align:center;max-width:430px}
+#levelCard{text-align:center;max-width:520px}
+.planetBadge{display:inline-block;margin:10px 0 4px;padding:8px 12px;border-radius:999px;background:rgba(130,110,255,.12);border:1px solid rgba(170,155,255,.2);font-weight:900}
+#miniHelp{position:absolute;right:16px;bottom:16px;width:min(330px,45vw);padding:12px 14px;border-radius:14px;font-size:11px;line-height:1.55;color:#98a7c5}
+@media(max-width:760px){
+  #controls{right:10px;top:auto;bottom:10px}
+  #hud{left:10px;top:10px}
+  #miniHelp{display:none}
+  .difficulty{grid-template-columns:1fr}
+  .card h1{font-size:27px}
+}
+
+#touchControls{position:absolute;inset:0;pointer-events:none;display:none}
+
+#steerSurface{
+  position:absolute;inset:0;pointer-events:auto;touch-action:none;
+}
+#touchHint{
+  position:absolute;left:50%;bottom:max(34px,env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  padding:8px 12px;border-radius:999px;
+  background:rgba(7,12,28,.48);border:1px solid rgba(160,190,255,.18);
+  color:#b9c8e8;font-size:12px;white-space:nowrap;pointer-events:none;
+  transition:opacity .35s;
+}
+#touchGuide{
+  position:absolute;width:70px;height:70px;border-radius:50%;
+  border:2px solid rgba(124,243,223,.48);
+  box-shadow:0 0 22px rgba(124,243,223,.22);
+  pointer-events:none;opacity:0;transform:translate(-50%,-50%);
+  transition:opacity .12s;
+}
+#touchGuide::after{
+  content:"";position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;
+  border-radius:50%;background:rgba(124,243,223,.75)
+}
+
+#touchBoost{
+  position:absolute;right:max(30px,env(safe-area-inset-right));bottom:max(38px,env(safe-area-inset-bottom));
+  width:116px;height:116px;border-radius:50%;pointer-events:auto;touch-action:none;border:2px solid rgba(124,243,223,.55);
+  background:radial-gradient(circle at 36% 30%,rgba(255,255,255,.22),rgba(56,145,155,.34) 38%,rgba(10,31,46,.68) 78%);
+  color:#dffff9;font-weight:900;font-size:17px;letter-spacing:.05em;box-shadow:0 0 35px rgba(95,240,220,.20)
+}
+#touchBoost.active{transform:scale(.95);background:radial-gradient(circle at 36% 30%,rgba(255,255,255,.5),rgba(70,245,221,.52) 40%,rgba(13,55,70,.82) 78%);box-shadow:0 0 44px rgba(95,240,220,.46)}
+#touchPause{
+  position:absolute;right:max(28px,env(safe-area-inset-right));top:max(82px,env(safe-area-inset-top));
+  pointer-events:auto;touch-action:manipulation
+}
+body.standalone #controls{top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right))}
+body.standalone #hud{top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left))}
+@media (pointer:coarse), (max-width:1100px){
+  #touchControls{display:block}
+  #miniHelp{display:none}
+  #controls{display:none}
+  #hud{max-width:62vw}
+}
+@media (orientation:portrait) and (pointer:coarse){
+  #touchBoost{width:104px;height:104px}
+  #hud{max-width:calc(100vw - 24px);width:calc(100vw - 24px)}
+}
